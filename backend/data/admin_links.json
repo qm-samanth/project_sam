@@ -1,0 +1,193 @@
+[
+  {
+    "id": "page_dashboard",
+    "type": "main_page",
+    "name": "Dashboard",
+    "url_path": "/admin/dashboard",
+    "description": "Provides a comprehensive overview of key system metrics, recent activities, and quick access to frequently used features.",
+    "keywords": ["dashboard", "overview", "home", "summary", "statistics", "at-a-glance"],
+    "children_ids": ["section_quick_stats", "section_recent_activity"], 
+    "common_tasks": [
+      {"label": "View Sales Overview", "intent": "view_summary", "entity": "sales"},
+      {"label": "Check System Health", "intent": "view_status", "entity": "system_health"}
+    ]
+  },
+  {
+    "id": "page_user_management",
+    "type": "main_page",
+    "name": "User Management",
+    "url_path": "/admin/users",
+    "description": "Central module for managing all user accounts, roles, and permissions within the system. Administrators can add, edit, or remove users and define their access levels.",
+    "keywords": ["users", "accounts", "permissions", "roles", "staff", "employees", "members", "admin access"],
+    "children_ids": ["tab_user_list", "tab_roles_permissions", "tab_invitations"], 
+    "common_tasks": [
+      {"label": "Add New User", "intent": "add_item", "entity": "user"},
+      {"label": "Manage User Roles", "intent": "manage_settings", "entity": "roles"},
+      {"label": "Reset User Password", "intent": "reset_credential", "entity": "user_password"}
+    ]
+  },
+  {
+    "id": "page_product_catalog",
+    "type": "main_page",
+    "name": "Product Catalog",
+    "url_path": "/admin/products",
+    "description": "Manages all products available in the system, including adding new products, updating details, managing inventory levels, and categorizing items.",
+    "keywords": ["products", "inventory", "catalog", "items", "goods","samanth", "stock", "store", "ecommerce"],
+    "children_ids": ["tab_product_list", "tab_categories", "tab_attributes"], 
+    "common_tasks": [
+      {"label": "Add New Product", "intent": "add_item", "entity": "product"},
+      {"label": "Update Product Stock", "intent": "update_quantity", "entity": "product_stock"},
+      {"label": "Manage Product Categories", "intent": "manage_settings", "entity": "product_categories"}
+    ]
+  },
+
+  {
+    "id": "tab_user_list",
+    "type": "sub_tab",
+    "parent_id": "page_user_management",
+    "name": "User List",
+    "url_path": "/admin/users/list", 
+    "description": "Displays a comprehensive list of all registered users with options for filtering, searching, and individual user actions.",
+    "keywords": ["user list", "all users", "view users", "active users", "inactive users", "user table"],
+    "children_ids": ["section_user_search_filter", "section_user_actions_display"], 
+    "common_tasks": [
+      {"label": "Search for a User", "intent": "search_item", "entity": "user"},
+      {"label": "Filter Users by Role", "intent": "filter_list", "entity": "user_role"}
+    ]
+  },
+  {
+    "id": "tab_roles_permissions",
+    "type": "sub_tab",
+    "parent_id": "page_user_management",
+    "name": "Roles & Permissions",
+    "url_path": "/admin/users/roles",
+    "description": "Defines and manages different user roles and their associated permissions within the system, controlling access to various functionalities.",
+    "keywords": ["roles", "permissions", "access control", "user groups", "security settings", "user privileges"],
+    "children_ids": ["section_role_creation", "section_permission_matrix"], 
+    "common_tasks": [
+      {"label": "Create New Role", "intent": "add_item", "entity": "role"},
+      {"label": "Edit Role Permissions", "intent": "edit_settings", "entity": "role_permissions"}
+    ]
+  },
+  {
+    "id": "tab_product_list",
+    "type": "sub_tab",
+    "parent_id": "page_product_catalog",
+    "name": "Product List",
+    "url_path": "/admin/products/list",
+    "description": "View and manage all products in the catalog, including their details, pricing, and inventory levels.",
+    "keywords": ["product list", "all products", "view products", "product inventory", "stock check"],
+    "children_ids": ["section_product_search_filter", "section_product_display_actions"],
+    "common_tasks": [
+      {"label": "Search Product by Name", "intent": "search_item", "entity": "product"},
+      {"label": "Update Product Price", "intent": "edit_item", "entity": "product_price"}
+    ]
+  },
+
+  
+  {
+    "id": "section_user_search_filter",
+    "type": "section",
+    "parent_id": "tab_user_list",
+    "name": "Search & Filter Users",
+    "url_path": "/admin/users/list#search-filter", 
+    "description": "Provides tools to efficiently search for specific users by various criteria and apply filters to narrow down the user list.",
+    "keywords": ["search users", "filter accounts", "find user", "user lookup", "sort users"],
+    "children_ids": ["item_user_search_bar", "item_user_role_filter", "item_user_status_filter"], 
+    "functionalities": [
+      {"label": "Search for a User", "intent": "search_item", "entity": "user"},
+      {"label": "Filter Users by Role", "intent": "filter_list", "entity": "user_role"},
+      {"label": "Filter Users by Status", "intent": "filter_list", "entity": "user_status"}
+    ]
+  },
+  {
+    "id": "section_user_actions_display",
+    "type": "section",
+    "parent_id": "tab_user_list",
+    "name": "User Actions",
+    "url_path": "/admin/users/list#actions",
+    "description": "Displays available actions for individual users, such as editing their profiles, deleting accounts, or resetting passwords.",
+    "keywords": ["user actions", "edit user", "delete user", "suspend user", "reset password", "user options"],
+    "children_ids": ["item_edit_user_button", "item_delete_user_button", "item_reset_password_button"], 
+    "functionalities": [
+      {"label": "Edit User Profile", "intent": "edit_item", "entity": "user_profile"},
+      {"label": "Delete User Account", "intent": "delete_item", "entity": "user_account"},
+      {"label": "Reset User Password", "intent": "reset_credential", "entity": "user_password"},
+      {"label": "Suspend User Account", "intent": "change_status", "entity": "user_status"}
+    ]
+  },
+  {
+    "id": "section_role_creation",
+    "type": "section",
+    "parent_id": "tab_roles_permissions",
+    "name": "Create New Role",
+    "url_path": "/admin/users/roles#create-role",
+    "description": "Form to define and create a new custom user role with specific access levels and permissions.",
+    "keywords": ["add role", "new role", "create role", "define permissions", "custom role"],
+    "children_ids": ["item_role_name_field", "item_permissions_checkboxes"], 
+    "functionalities": [
+      {"label": "Create Custom Role", "intent": "add_item", "entity": "role"},
+      {"label": "Assign Role Permissions", "intent": "manage_settings", "entity": "role_permissions"}
+    ]
+  },
+  {
+    "id": "section_cache_settings_website", 
+    "type": "section",
+    "parent_id": "page_website_settings", 
+    "name": "Cache Settings",
+    "url_path": "/admin/website/settings#cache-settings",
+    "description": "Provides options to manage and clear the website's cache to ensure the latest content is displayed and improve performance.",
+    "keywords": ["cache", "purge cache", "clear cache", "website performance"],
+    "children_ids": ["item_purge_cache_button"],
+    "functionalities": [
+      {"label": "Purge Website Cache", "intent": "perform_action", "entity": "website_cache"},
+      {"label": "Clear All Cache", "intent": "perform_action", "entity": "all_cache"}
+    ]
+  },
+
+  
+  {
+    "id": "item_user_search_bar",
+    "type": "item",
+    "parent_id": "section_user_search_filter",
+    "name": "User Search Bar",
+    "description": "An input field to search for users by name, email, or other relevant identifiers.",
+    "keywords": ["search box", "find user", "user search input"],
+    "functionalities": [
+      {"label": "Enter User Search Query", "intent": "input_data", "entity": "user_search_query"}
+    ]
+  },
+  {
+    "id": "item_user_role_filter",
+    "type": "item",
+    "parent_id": "section_user_search_filter",
+    "name": "User Role Filter",
+    "description": "A dropdown or selection box to filter the user list by their assigned roles.",
+    "keywords": ["filter by role", "select role", "role dropdown"],
+    "functionalities": [
+      {"label": "Select Role to Filter By", "intent": "select_filter", "entity": "user_role"}
+    ]
+  },
+  {
+    "id": "item_edit_user_button",
+    "type": "item",
+    "parent_id": "section_user_actions_display",
+    "name": "Edit User Button",
+    "description": "A button located next to each user entry to open their profile for editing.",
+    "keywords": ["edit user", "modify user", "user profile edit"],
+    "functionalities": [
+      {"label": "Click Edit User Button", "intent": "navigate_to_form", "entity": "user_edit_form"}
+    ]
+  },
+  {
+    "id": "item_purge_cache_button",
+    "type": "item",
+    "parent_id": "section_cache_settings_website",
+    "name": "Purge Website Cache Button",
+    "description": "A prominent button to immediately clear the website's cached data, refreshing content.",
+    "keywords": ["purge cache button", "clear cache button", "refresh site"],
+    "functionalities": [
+      {"label": "Click Purge Cache", "intent": "execute_action", "entity": "purge_website_cache"}
+    ]
+  }
+]

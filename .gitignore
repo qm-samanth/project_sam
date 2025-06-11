@@ -1,0 +1,32 @@
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore virtual environment
+.venv/
+env/
+venv/
+ENV/
+
+# Ignore IDE and editor files
+.vscode/
+.idea/
+*.sublime-workspace
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore sensitive files
+.env
+*.log
+
+# Ignore build artifacts
+dist/
+build/
+*.egg-info/
+*.egg
+
+# Ignore ChromaDB data store
+backend/data/chroma_db_store/

@@ -1,0 +1,10 @@
+Flask
+python-dotenv
+sentence-transformers
+scikit-learn
+google-generativeai
+numpy
+chromadb
+# Add your Python dependencies here
+# Example:
+# requests
