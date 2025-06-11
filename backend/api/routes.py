@@ -18,11 +18,8 @@
 import os
 import json
 from flask import Blueprint, request, jsonify
-# Removed direct LLMClient import for embeddings if chroma_service handles it
-# Removed scikit-learn and numpy if chroma_service handles similarity search
-
-# Import the new chroma_service
-from backend.core.retrieval.chroma_service import ensure_collection_ready, search_collection, force_rebuild_collection
+# from backend.core.retrieval.chroma_service import ensure_collection_ready, search_collection, force_rebuild_collection # Old import
+from backend.core.chroma_service import ensure_collection_ready, search_collection, force_rebuild_collection # New import
 
 # Create a Blueprint for API routes
 api_bp = Blueprint('api', __name__)
