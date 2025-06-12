@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS # Import CORS
 # Assuming your routes are defined in 'routes.py' within the same 'api' package
 from .routes import api_bp
 # from config import settings # You might use this later for configurations
@@ -8,6 +9,7 @@ def create_app():
     Factory function to create and configure the Flask application.
     """
     app = Flask(__name__)
+    CORS(app) # Enable CORS for all routes
 
     # Register the Blueprint from routes.py
     # All routes defined in api_bp will be prefixed with /api
