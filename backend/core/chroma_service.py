@@ -29,11 +29,13 @@ def get_or_create_collection(client):
         return collection
     except: # Broad exception to catch errors if collection doesn't exist
         print(f"Collection '{COLLECTION_NAME}' not found. Creating a new one.")
-        # If you need to specify embedding function details for ChromaDB (depends on version)
-        # collection = client.create_collection(name=COLLECTION_NAME, embedding_function=...)
-        # For newer versions, ChromaDB can often infer or use its own embedding function if not specified,
-        # or you manage embeddings externally as we are doing.
-        collection = client.create_collection(name=COLLECTION_NAME)
+        # Create collection with cosine distance for similarity scoring
+        # Cosine distance gives values between 0 (identical) and 2 (opposite)
+        # We can convert to similarity: similarity = 1 - (distance / 2)
+        collection = client.create_collection(
+            name=COLLECTION_NAME,
+            metadata={"hnsw:space": "cosine"}  # Use cosine distance
+        )
         return collection
 
 def is_collection_populated(collection):

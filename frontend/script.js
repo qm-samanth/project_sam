@@ -70,25 +70,39 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
             
             if (data.results && data.results.length > 0) {
-                const firstResult = data.results[0];
-                let botReply = "No displayable content found for the top result."; // Default message
-
-                if (firstResult.name && firstResult.description) {
-                    botReply = `${firstResult.name}: ${firstResult.description}`;
-                } else if (firstResult.name) {
-                    botReply = firstResult.name;
-                } else if (firstResult.description) {
-                    botReply = firstResult.description;
-                }
+                // Display multiple results if available
+                const resultCount = data.results.length;
+                appendMessage(`Found ${resultCount} relevant result${resultCount > 1 ? 's' : ''}:`, 'bot-message');
                 
-                // Optionally, add the URL if available
-                if (firstResult.url_path && firstResult.url_path !== "N/A") {
-                    botReply += ` (Link: ${firstResult.url_path})`;
-                }
-
-                appendMessage(botReply, 'bot-message');
-            } else if (data.message) { // Handle cases where backend sends a direct message (e.g., "No results found")
-                 appendMessage(data.message, 'bot-message');
+                data.results.forEach((result, index) => {
+                    let botReply = "";
+                    
+                    if (result.name && result.description) {
+                        botReply = `${result.name}: ${result.description}`;
+                    } else if (result.name) {
+                        botReply = result.name;
+                    } else if (result.description) {
+                        botReply = result.description;
+                    } else {
+                        botReply = "No displayable content found for this result.";
+                    }
+                    
+                    // Add URL if available
+                    if (result.url_path && result.url_path !== "N/A") {
+                        botReply += ` (Link: ${result.url_path})`;
+                    }
+                    
+                    // Add relevance score
+                    if (result.relevance_score) {
+                        const relevancePercent = (result.relevance_score * 100).toFixed(1);
+                        botReply += ` [Relevance: ${relevancePercent}%]`;
+                    }
+                    
+                    appendMessage(botReply, 'bot-message');
+                });
+            } else if (data.message) { 
+                // Handle cases where backend sends a direct message (e.g., "No results found")
+                appendMessage(data.message, 'bot-message');
             } else {
                 appendMessage("No relevant information found.", 'bot-message');
             }
