@@ -165,20 +165,22 @@ USER QUERY: "{user_query}"
 RELEVANT RESULTS FOUND:
 {json.dumps(results_summary, indent=1)}
 
-TASK: Write a natural, conversational response that:
-1. Confirms you found the exact functionality they need
-2. Provides a clear, clickable link in markdown format: [Link Text](URL)  
-3. Mentions the specific functionality when possible
-4. Is confident and helpful (not vague or uncertain)
+TASK: Write a clean, modern response that:
+1. Uses a friendly but professional tone
+2. Provides a clear, clickable link in markdown format: [Section Name](URL)
+3. Is concise - stop after the main answer and link
+4. Uses clean, modern language with emojis for visual appeal
+5. NEVER use hedging phrases or list unrelated functionality
 
-EXAMPLE FORMAT:
-"Perfect! I found exactly what you need for Google Map zoom settings.
+EXAMPLES:
 
-You can adjust the Google Map zoom level in the [Offersites Settings](https://teamvelocityportal.com/OfferSites/Setup/) section. This page includes a 'Set Google Map Zoom' option along with many other website display and functionality settings.
+"✅ **Found it!** You can adjust the Google Map zoom in [Offersites Settings](https://teamvelocityportal.com/OfferSites/Setup/)."
 
-This will let you control how zoomed in or out the maps appear on your website."
+"✅ **Found it!** You can purge your website cache in [Dealer Details](https://example.com/dealer-details)."
 
-Write a similar helpful response for the user's query:
+"✅ **Found it!** You can update your favicon in [Offersite Setup](https://example.com/setup)."
+
+Write a similar clean, concise response:
 """
 
     try:
