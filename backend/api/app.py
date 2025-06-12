@@ -1,7 +1,10 @@
 from flask import Flask
 from flask_cors import CORS # Import CORS
-# Assuming your routes are defined in 'routes.py' within the same 'api' package
-from .routes import api_bp
+# Import routes - handle both relative and absolute imports
+try:
+    from .routes import api_bp
+except ImportError:
+    from routes import api_bp
 # from config import settings # You might use this later for configurations
 
 def create_app():

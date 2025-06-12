@@ -6,9 +6,9 @@ import os
 # Configuration
 CHROMA_DATA_PATH = "/Users/samanth/Project_AI/project_sam/backend/data/chroma_db_store"
 COLLECTION_NAME = "admin_links_collection"
-# Using a pre-trained model suitable for sentence embeddings
-# This model is good for semantic search.
-MODEL_NAME = 'all-MiniLM-L6-v2' 
+# Using a more powerful model for better semantic understanding
+# This model provides higher quality embeddings for better search accuracy
+MODEL_NAME = 'all-mpnet-base-v2' 
 
 # Ensure the model is downloaded (SentenceTransformer handles this automatically on first use)
 # You might want to ensure this happens during a setup phase if internet access is an issue at runtime.
@@ -69,11 +69,11 @@ def populate_collection_from_json(collection, json_file_path="/Users/samanth/Pro
     ids_to_add = []
 
     for item in data:
-        # Concatenate relevant text fields for a comprehensive embedding
-        text_to_embed = f"{item.get('name', '')} {item.get('description', '')} {' '.join(item.get('keywords', []))}".strip()
+        # Use only keywords for embedding to focus on key terms
+        text_to_embed = ' '.join(item.get('keywords', [])).strip()
         
-        if not text_to_embed: # Skip if no text content
-            print(f"LOG_CHROMA_SERVICE: Skipping item with id '{str(item.get('id', 'Unknown ID'))}' due to empty text_to_embed.")
+        if not text_to_embed: # Skip if no keywords
+            print(f"LOG_CHROMA_SERVICE: Skipping item with id '{str(item.get('id', 'Unknown ID'))}' due to empty keywords.")
             continue
 
         print(f"LOG_CHROMA_SERVICE: Sending text for ITEM embedding (ID: {str(item.get('id', 'Unknown ID'))}): '{text_to_embed[:150]}...'") # Log added
@@ -89,12 +89,18 @@ def populate_collection_from_json(collection, json_file_path="/Users/samanth/Pro
         
         # Ensure all metadata values are strings or other supported primitive types.
         # Replace None with an empty string or a placeholder string.
+        # Store common_tasks as JSON string since ChromaDB doesn't support arrays
+        common_tasks_json = json.dumps(item.get("common_tasks", [])) if item.get("common_tasks") else "[]"
+        keywords_json = json.dumps(item.get("keywords", [])) if item.get("keywords") else "[]"
+        
         metadata_entry = {
             "id": str(item.get("id", "N/A")),
             "name": str(item.get("name", "N/A")),
             "url_path": str(item.get("url_path", "N/A")),
             "description": str(item.get("description", "N/A")),
-            "type": str(item.get("type", "N/A"))
+            "type": str(item.get("type", "N/A")),
+            "keywords": keywords_json,  # Store keywords as JSON string
+            "common_tasks": common_tasks_json
             # Add other fields you might want to filter by or retrieve, ensuring they are also sanitized
         }
         metadatas_to_add.append(metadata_entry)

@@ -20,6 +20,7 @@ import json
 from flask import Blueprint, request, jsonify
 # from backend.core.retrieval.chroma_service import ensure_collection_ready, search_collection, force_rebuild_collection # Old import
 from core.chroma_service import ensure_collection_ready, search_collection, force_rebuild_collection # New import
+from core.llm_service import rerank_search_results, extract_reranked_results, generate_natural_response # New LLM import
 
 # Create a Blueprint for API routes
 api_bp = Blueprint('api', __name__)
@@ -65,8 +66,8 @@ def search():
 
     # Get similarity threshold from request (optional, defaults to 0.4 for debugging)
     # Set similarity threshold - cosine similarity ranges from 0 to 1
-    # 0.7 means we want results that are at least 70% similar
-    similarity_threshold = data.get('threshold', 0.7)
+    # 0.4 means we want results that are at least 40% similar
+    similarity_threshold = data.get('threshold', 0.4)
 
     # Get the ChromaDB collection instance (ensures it's initialized and populated)
     collection = get_chroma_collection_instance()
@@ -113,12 +114,26 @@ def search():
         # Only include results above the similarity threshold
         if relevance_score >= similarity_threshold:
             if link_info: # Ensure metadata is not None
+                # Parse common_tasks from JSON string
+                try:
+                    common_tasks = json.loads(link_info.get('common_tasks', '[]'))
+                except (json.JSONDecodeError, TypeError):
+                    common_tasks = []
+                
+                # Parse keywords from JSON string
+                try:
+                    keywords = json.loads(link_info.get('keywords', '[]'))
+                except (json.JSONDecodeError, TypeError):
+                    keywords = []
+                
                 formatted_results.append({
                     "id": link_info.get('id'), # from metadata
                     "name": link_info.get('name'),
                     "url_path": link_info.get('url_path'),
                     "description": link_info.get('description'),
                     "type": link_info.get('type'),
+                    "keywords": keywords,  # Include keywords for LLM analysis
+                    "common_tasks": common_tasks,
                     "relevance_score": relevance_score
                 })
             else:
@@ -139,9 +154,28 @@ def search():
     formatted_results.sort(key=lambda x: x['relevance_score'], reverse=True)
     formatted_results = formatted_results[:5]
 
+    # 🆕 LLM Re-ranking: Use Gemini to intelligently re-rank results
+    print(f"DEBUG: Sending {len(formatted_results)} results to LLM for re-ranking...")
+    try:
+        llm_reranked = rerank_search_results(input_text, formatted_results)
+        final_results = extract_reranked_results(llm_reranked, min_llm_score=50)  # Lower threshold for testing
+        print(f"DEBUG: LLM successfully re-ranked results")
+    except Exception as e:
+        print(f"WARNING: LLM re-ranking failed: {e}. Using original semantic ranking.")
+        final_results = formatted_results
+
+    # 🆕 Generate natural language response with clickable links
+    try:
+        natural_response = generate_natural_response(input_text, final_results)
+        print(f"DEBUG: Generated natural language response")
+    except Exception as e:
+        print(f"WARNING: Natural response generation failed: {e}")
+        natural_response = f"I found {len(final_results)} result(s) for '{input_text}'."
+
     return jsonify({
         'query': input_text,
-        'results': formatted_results
+        'results': final_results,
+        'natural_response': natural_response
     })
 
 @api_bp.route('/rebuild-index', methods=['GET'])

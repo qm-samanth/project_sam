@@ -69,36 +69,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
             
-            if (data.results && data.results.length > 0) {
+            // Check if we have a natural language response
+            if (data.natural_response) {
+                // Display the natural language response with clickable links
+                appendNaturalResponse(data.natural_response);
+            } else if (data.results && data.results.length > 0) {
+                // Fallback to structured results if no natural response
+                // Sort results by LLM relevance score first, then by relevance score
+                data.results.sort((a, b) => {
+                    // If both have LLM scores, use those
+                    if (a.llm_relevance_score && b.llm_relevance_score) {
+                        return (b.llm_relevance_score || 0) - (a.llm_relevance_score || 0);
+                    }
+                    // Fallback to original relevance score
+                    return (b.relevance_score || 0) - (a.relevance_score || 0);
+                });
+                
                 // Display multiple results if available
                 const resultCount = data.results.length;
                 appendMessage(`Found ${resultCount} relevant result${resultCount > 1 ? 's' : ''}:`, 'bot-message');
                 
                 data.results.forEach((result, index) => {
-                    let botReply = "";
-                    
-                    if (result.name && result.description) {
-                        botReply = `${result.name}: ${result.description}`;
-                    } else if (result.name) {
-                        botReply = result.name;
-                    } else if (result.description) {
-                        botReply = result.description;
-                    } else {
-                        botReply = "No displayable content found for this result.";
-                    }
-                    
-                    // Add URL if available
-                    if (result.url_path && result.url_path !== "N/A") {
-                        botReply += ` (Link: ${result.url_path})`;
-                    }
-                    
-                    // Add relevance score
-                    if (result.relevance_score) {
-                        const relevancePercent = (result.relevance_score * 100).toFixed(1);
-                        botReply += ` [Relevance: ${relevancePercent}%]`;
-                    }
-                    
-                    appendMessage(botReply, 'bot-message');
+                    // Create a structured result display
+                    appendStructuredResult(result);
                 });
             } else if (data.message) { 
                 // Handle cases where backend sends a direct message (e.g., "No results found")
@@ -116,5 +109,77 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             appendMessage('Sorry, I encountered an error trying to reach the server.', 'bot-message');
         }
+    }
+
+    function appendStructuredResult(result) {
+        const resultContainer = document.createElement('div');
+        resultContainer.classList.add('message', 'bot-message', 'structured-result');
+        
+        // Name as clickable link
+        if (result.name) {
+            const nameElement = document.createElement('div');
+            nameElement.classList.add('result-name');
+            
+            if (result.url_path && result.url_path !== "N/A") {
+                const link = document.createElement('a');
+                link.href = result.url_path;
+                link.target = '_blank';
+                link.textContent = result.name;
+                link.classList.add('result-link');
+                nameElement.appendChild(link);
+            } else {
+                nameElement.textContent = result.name;
+            }
+            resultContainer.appendChild(nameElement);
+        }
+        
+        // Functionality/Common Tasks
+        if (result.common_tasks && result.common_tasks.length > 0) {
+            const functionalityElement = document.createElement('div');
+            functionalityElement.classList.add('result-functionality');
+            functionalityElement.innerHTML = `<strong>Common Tasks:</strong>`;
+            
+            const tasksList = document.createElement('ul');
+            tasksList.classList.add('common-tasks-list');
+            
+            result.common_tasks.forEach(task => {
+                const taskItem = document.createElement('li');
+                taskItem.textContent = task.label;
+                tasksList.appendChild(taskItem);
+            });
+            
+            functionalityElement.appendChild(tasksList);
+            resultContainer.appendChild(functionalityElement);
+        } else if (result.description) {
+            // Fallback to description if no common_tasks
+            const functionalityElement = document.createElement('div');
+            functionalityElement.classList.add('result-functionality');
+            functionalityElement.innerHTML = `<strong>Functionality:</strong> ${result.description}`;
+            resultContainer.appendChild(functionalityElement);
+        }
+        
+        // Relevance score
+        if (result.relevance_score) {
+            const relevancePercent = (result.relevance_score * 100).toFixed(1);
+            const relevanceElement = document.createElement('div');
+            relevanceElement.classList.add('result-relevance');
+            relevanceElement.textContent = `Relevance: ${relevancePercent}%`;
+            resultContainer.appendChild(relevanceElement);
+        }
+        
+        chatMessages.appendChild(resultContainer);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function appendNaturalResponse(naturalResponse) {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message', 'bot-message', 'natural-response');
+        
+        // Convert markdown links to clickable HTML links
+        const htmlContent = naturalResponse.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" class="result-link">$1</a>');
+        
+        messageElement.innerHTML = htmlContent;
+        chatMessages.appendChild(messageElement);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 });
