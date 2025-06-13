@@ -48,6 +48,36 @@
   },
 
   {
+    "id": "VDP_CTA_settings",
+    "type": "section",
+    "parent_id": "website_settings",
+    "name": "VDP CTA Settings",
+    "url_path": "https://teamvelocityportal.com/OfferSites/Setup/#VDP_CTA_settings",
+    "description": "Here, you can configure the Call to Action (CTA) buttons for your Vehicle Details Pages (VDPs). You'll also be able to customize the button color, font color, and border color for these VDP CTAs.",
+    "keywords": ["VDP CTA buttons", "vehicle details page CTA", "configure VDP buttons", "VDP button color", "VDP font color", "VDP border color", "customize VDP CTAs", "vehicle details page calls to action","configure VDP CTA buttons", "vehicle details page CTA buttons", "VDP button customization", "button color for VDP", "font color for VDP CTA", "border color for VDP CTA", "VDP call to action settings", "customize VDP buttons", "vehicle details page button styling", "VDP action button color"],
+    "children_ids": ["tab_user_list", "tab_roles_permissions", "tab_invitations"], 
+    "common_tasks": [
+    {"label": "Configure CTA buttons for both new and used VDP", "intent": "edit_detail", "entity": "dealer_name"},
+    {"label": "Change button configuration", "intent": "edit_detail", "entity": "dealer_address"}
+  ]
+  },
+
+  {
+    "id": "service_specials",
+    "type": "section",
+    "parent_id": "website_settings",
+    "name": "Service Specials",
+    "url_path": "https://teamvelocityportal.com/OfferSites/Setup/#service_specials",
+    "description": "You can hide the Schedule Service, Contact Us, and Get Offer buttons in Service Specials, select a design for them, configure button color, button font color, offer amount font color, coupon heading font color, and the URL for the Schedule Service button. You can also show Disclosure instead of View Details, add additional CTAs with custom button color, font color, and redirection, and show the Expiration Date on service specials coupons.",
+    "keywords": ["hide schedule service button service specials", "hide contact us button service specials", "hide get offer button service specials", "service specials button display", "select service specials design", "configure button color service specials", "button font color service specials", "offer amount font color service specials", "coupon heading font color service specials", "configure schedule service button URL service specials", "show disclosure instead of view details service specials coupons", "add additional CTAs service specials", "additional CTA button color service specials", "additional CTA font color service specials", "specify button redirection service specials", "show expiration date service specials coupons"],
+    "children_ids": ["tab_user_list", "tab_roles_permissions", "tab_invitations"], 
+    "common_tasks": [
+    {"label": "Configure CTA buttons for both new and used VDP", "intent": "edit_detail", "entity": "dealer_name"},
+    {"label": "Change button configuration", "intent": "edit_detail", "entity": "dealer_address"}
+  ]
+  },
+
+  {
     "id": "offersite_dealer_contact_info",
     "type": "section",
     "parent_id": "website_settings",
@@ -73,6 +103,22 @@
     {"label": "Set Latitude", "intent": "edit_detail", "entity": "latitude"},
     {"label": "Set Longitude", "intent": "edit_detail", "entity": "longitude"},
     {"label": "Edit Contact Info", "intent": "edit_info", "entity": "contact_info"}
+  ]
+  },
+  {
+    "id": "rotational_special_banner_CTA_settings",
+    "type": "section",
+    "parent_id": "website_settings",
+    "name": "Rotational Special Banner CTA Settings",
+    "url_path": "https://teamvelocityportal.com/OfferSites/Setup/#rotational_special_banner_CTA_settings",
+    "description": "You can configure Call to Action (CTA) buttons for the rotational banners displayed on your homepage here.",
+    "keywords": ["rotational banner cta", "rotation banner buttons", "cta buttons for special banner", "button configuration for special banner"],
+    "children_ids": ["tab_user_list", "tab_roles_permissions", "tab_invitations"], 
+   "common_tasks": [
+    {"label": "Configure Rotational Banner CTA Buttons","intent": "configure_setting","entity": "rotational_banner_cta_buttons"},
+    {"label": "Manage Homepage Banner Buttons",  "intent": "manage_setting", "entity": "homepage_banner_buttons"},
+    {"label": "Adjust Special Banner CTA Settings", "intent": "adjust_setting", "entity": "special_banner_cta"},
+    {"label": "Set Up Banner Button Configuration","intent": "setup_setting", "entity": "banner_button_configuration"}
   ]
   },
 
